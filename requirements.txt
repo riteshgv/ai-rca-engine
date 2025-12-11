@@ -4,3 +4,7 @@ tqdm
 rich
 python-dotenv
 typing_extensions
+sentence-transformers
+faiss-cpu
+scikit-learn
+
