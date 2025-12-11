@@ -1,0 +1,3 @@
+2025-01-12T10:20:33Z [ERROR] [MySQL] Connection refused on port 3306
+2025-01-12T10:21:01Z [Warning] Aborted connection 45 to db: system lock
+

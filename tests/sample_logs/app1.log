@@ -1,0 +1,4 @@
+2025-01-12 10:15:22 INFO User logged in successfully
+2025-01-12 10:16:03 ERROR Failed to fetch user profile: timeout
+2025-01-12 10:17:55 WARN Cache miss for key user_123
+
