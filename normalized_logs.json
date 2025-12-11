@@ -1,0 +1,20 @@
+[
+    {
+        "timestamp": "2025-01-12 10:15:22",
+        "level": "INFO",
+        "source": "UNKNOWN",
+        "message": "User logged in successfully"
+    },
+    {
+        "timestamp": "2025-01-12 10:16:03",
+        "level": "ERROR",
+        "source": "UNKNOWN",
+        "message": "Failed to fetch user profile: timeout"
+    },
+    {
+        "timestamp": "2025-01-12 10:17:55",
+        "level": "WARN",
+        "source": "UNKNOWN",
+        "message": "Cache miss for key user_123"
+    }
+]
