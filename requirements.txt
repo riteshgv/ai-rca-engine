@@ -7,4 +7,4 @@ typing_extensions
 sentence-transformers
 faiss-cpu
 scikit-learn
-
+chromadb

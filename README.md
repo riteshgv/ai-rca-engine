@@ -38,6 +38,15 @@ This project is an AI-powered Root Cause Analysis engine that:
 - Confirmed chunker produces meaningful grouped text blocks
 - Preprocessing pipeline now ready for embedding & vector storage
 
+## Day 4 Progress
+Embedding + Vector Database
+- Implemented embedding pipeline using Sentence Transformer
+- Added local vector database using ChromaDB
+- Created test script to validate end-to-end “chunk → embed → store → search”
+- Successfully generated embeddings and performed semantic search
+- System now capable of AI-powered log retrieval for future RCA engine
+
+
 ## Tech Stack
 - Python
 - Transformers (later)
