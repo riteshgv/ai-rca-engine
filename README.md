@@ -18,6 +18,26 @@ This project is an AI-powered Root Cause Analysis engine that:
 - Added README  
 - Prepared for coding ingestion pipeline (Day 2)
 
+## Day 2 Progress
+- Log Ingestion Pipeline
+- Completed ingestion module to read raw log files
+- Built log_ingestion.py for file loading and JSON normalization
+- Added parsers.py to extract timestamp, level, and message
+- Ensured clean Python package structure using absolute imports
+- Tested ingestion with sample log file using python -m execution
+- Confirmed output in structured JSON format
+- Prepared clean ingestion flow for preprocessing (Day 3)
+
+## Day 3 Progress
+- Preprocessing + Chunking
+- Implemented log cleaning and contextual chunking logic
+- Added chunker.py for window-based grouping of logs
+- Created automated test module test_preprocessing.py
+- Successfully downloaded Sentence Transformer model during tests
+- Verified module execution using python -m src.preprocessing.test_preprocessing
+- Confirmed chunker produces meaningful grouped text blocks
+- Preprocessing pipeline now ready for embedding & vector storage
+
 ## Tech Stack
 - Python
 - Transformers (later)
