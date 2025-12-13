@@ -1,24 +1,22 @@
-# src/rca/test_rca.py
-
 from src.rca.rca_engine import RCAEngine
+from src.rca.llm import LocalLLM   # or whatever LLM wrapper you created
 
 def test_rca():
-    sample_logs = [
-        "2024-01-20 10:01:02 ERROR Failed to connect to database",
-        "2024-01-20 10:01:05 WARN Retry attempt 1",
-        "2024-01-20 10:01:06 ERROR Database timeout",
-        "2024-01-20 11:03:22 INFO Server recovered"
+    llm = LocalLLM()   # explicitly create LLM
+    engine = RCAEngine(llm=llm)
+
+    logs = [
+        "ERROR Failed to connect to database",
+        "WARN Database retry attempt 1",
+        "INFO Connection successful",
+        "ERROR API timeout",
+        "WARN Slow response detected"
     ]
 
-    engine = RCAEngine()
-    result = engine.analyze_logs(sample_logs)
+    result = engine.analyze(logs)
 
-    print("\n========= Top Similar Log Chunks =========")
-    for c in result["similar_chunks"]:
-        print(c)
-    print("\n========= RCA Result =========")
-    print(result["root_cause_analysis"])
+    print("\n===== RCA RESULT =====")
+    print(result)
 
 if __name__ == "__main__":
     test_rca()
-

@@ -1,41 +1,29 @@
-# src/rca/rca_engine.py
-
-from src.preprocessing.chunker import chunk_logs
-from src.embedding.embedder import LogEmbedder
-from src.embedding.vector_store import VectorStore
-from src.rca.llm_reasoner import LLMReasoner
+from src.rca.rule_engine import rule_based_rca
+from src.rca.prompt_builder import build_rca_prompt
+from src.rca.rca_schema import RCAResult
 
 class RCAEngine:
-    def __init__(self):
-        self.embedder = LogEmbedder()
-        self.store = VectorStore()
-        self.reasoner = LLMReasoner()
 
-    def analyze_logs(self, raw_logs):
-        # Step 1: chunk logs
-        chunks = chunk_logs(raw_logs, 3)
+    def __init__(self, llm):
+        self.llm = llm
 
-        # Step 2: embed chunks
-        vectors = self.embedder.embed(chunks)
+    def analyze(self, log_chunks: list[str]) -> RCAResult:
+        rule_result = rule_based_rca(log_chunks)
 
-        # Step 3: store chunks into vector DB
-        ids = [f"chunk_{i}" for i in range(len(chunks))]
-        metadata = [{"text": c} for c in chunks]
-        self.store.add_embeddings(ids, vectors, metadata)
+        if rule_result:
+            return RCAResult(**rule_result)
 
-        # Step 4: find top similar incidents
-        joined_logs = "\n".join(raw_logs)
-        results = self.store.search(joined_logs, self.embedder.embed, n=3)
+        prompt = build_rca_prompt(log_chunks)
+        response = self.llm.generate(prompt)
 
-        # Step 5: select best match
-        best_texts = [m["text"] for m in results["metadatas"][0]]
+        return self._parse_response(response)
 
-        # Step 6: AI reasoning
-        context = "\n".join(best_texts)
-        rca_result = self.reasoner.generate_rca(context)
+    def _parse_response(self, text: str) -> RCAResult:
+        lines = text.split("\n")
 
-        return {
-            "similar_chunks": best_texts,
-            "root_cause_analysis": rca_result
-        }
-
+        return RCAResult(
+            root_cause=lines[0].replace("Root Cause:", "").strip(),
+            reason=lines[1].replace("Why it occurred:", "").strip(),
+            fix=lines[2].replace("Recommended Fix:", "").strip(),
+            confidence=float(lines[3].split(":")[-1].strip())
+        )
