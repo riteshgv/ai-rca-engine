@@ -46,6 +46,14 @@ Embedding + Vector Database
 - Successfully generated embeddings and performed semantic search
 - System now capable of AI-powered log retrieval for future RCA engine
 
+## Day 5 Progress
+Root Cause Reasoning Engine
+- Added LLM reasoning layer for RCA using Transformers pipeline (offline model)
+- Integrated chunking + embedding + vector search + reasoning
+- Built RCAEngine to perform end-to-end analysis
+- Implemented test script to validate RCA flow
+- System can now ingest logs, search similar incidents, and generate RCA automatically
+
 
 ## Tech Stack
 - Python
