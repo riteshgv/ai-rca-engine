@@ -1,29 +1,72 @@
-from src.rca.rule_engine import rule_based_rca
-from src.rca.prompt_builder import build_rca_prompt
-from src.rca.rca_schema import RCAResult
-
 class RCAEngine:
-
     def __init__(self, llm):
         self.llm = llm
 
-    def analyze(self, log_chunks: list[str]) -> RCAResult:
-        rule_result = rule_based_rca(log_chunks)
+    def analyze(self, current_logs, similar_logs):
+        """
+        current_logs: str
+        similar_logs: chromadb query result
+        """
 
-        if rule_result:
-            return RCAResult(**rule_result)
+        # Safely extract distances
+        raw_distances = similar_logs.get("distances", [])
 
-        prompt = build_rca_prompt(log_chunks)
-        response = self.llm.generate(prompt)
+        # Chroma returns List[List[float]]
+        if raw_distances and isinstance(raw_distances[0], list):
+            distances = raw_distances[0]
+        else:
+            distances = []
 
-        return self._parse_response(response)
+        confidence = self._calculate_confidence(distances)
 
-    def _parse_response(self, text: str) -> RCAResult:
-        lines = text.split("\n")
+        prompt = self._build_prompt(current_logs, similar_logs)
 
-        return RCAResult(
-            root_cause=lines[0].replace("Root Cause:", "").strip(),
-            reason=lines[1].replace("Why it occurred:", "").strip(),
-            fix=lines[2].replace("Recommended Fix:", "").strip(),
-            confidence=float(lines[3].split(":")[-1].strip())
-        )
+        rca_text = self.llm.generate(prompt)
+
+        return {
+            "rca": rca_text,
+            "confidence": confidence
+        }
+
+    def _calculate_confidence(self, distances):
+        if not distances:
+            return 0.0
+
+        # distances are similarity → lower = closer
+        avg_distance = sum(distances) / len(distances)
+
+        # Normalize to confidence score
+        confidence = max(0.0, min(1.0, 1 - avg_distance))
+        return round(confidence, 2)
+
+    def _build_prompt(self, current_logs, similar_logs):
+        docs = similar_logs.get("documents", [[]])[0]
+
+        if docs:
+            context = "\n".join(docs)
+        else:
+            context = "No similar historical incidents available."
+
+        return f"""
+            You are an experienced Site Reliability Engineer.
+
+            Analyze the incident logs and provide Root Cause Analysis.
+
+            Incident Logs:
+            {current_logs}
+
+            Similar Past Incidents:
+            {context}
+
+            Respond STRICTLY in the following format:
+
+            Root Cause:
+            <one sentence>
+
+            Why it happened:
+            <2–3 lines>
+
+            Recommended Fix:
+            <clear actionable steps>
+            """
+

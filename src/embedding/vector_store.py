@@ -22,6 +22,7 @@ class VectorStore:
         query_embedding = embed_fn([query_text])[0]
         result = self.collection.query(
             query_embeddings=[query_embedding],
-            n_results=n
+            n_results=n,
+            include=["distances", "documents"]
         )
         return result

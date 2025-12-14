@@ -1,5 +1,15 @@
 # AI RCA Engine (Self-Learning Log Analyzer)
 
+## Installation
+
+```bash
+git clone https://github.com/<your-username>/ai-rca-engine.git
+cd ai-rca-engine
+pip install -e .
+
+Usage (CLI):
+rca --file tests/sample_logs/app1.log
+
 This project is an AI-powered Root Cause Analysis engine that:
 
 - Reads logs from any application or system
@@ -53,6 +63,21 @@ Root Cause Reasoning Engine
 - Built RCAEngine to perform end-to-end analysis
 - Implemented test script to validate RCA flow
 - System can now ingest logs, search similar incidents, and generate RCA automatically
+
+
+## Day 7 Progress
+
+- Converted project into installable Python package
+- Added CLI executable (rca)
+- Enabled system-wide usage via pip
+- Verified end-to-end RCA via CLI
+
+## Day 8 Progress
+
+- Implemented evidence-based confidence scoring
+- Derived confidence from vector similarity distances
+- Removed hard-coded confidence values
+- Improved RCA trustworthiness and explainability
 
 
 ## Tech Stack
